@@ -33,7 +33,7 @@ contract EscrowTest is Test {
         uint256 escrowId = escrow.createEscrow{value: 5 ether}(productId, 5);
         assertEq(escrowId, 1);
 
-        (, , , , uint8 status) = escrow.getEscrow(escrowId);
+        (,,,, uint8 status) = escrow.getEscrow(escrowId);
         assertEq(uint256(status), uint256(Escrow.EscrowStatus.Pending));
     }
 
@@ -52,7 +52,7 @@ contract EscrowTest is Test {
         vm.deal(address(123), 100 ether);
         uint256 escrowId = escrow.createEscrow{value: 5 ether}(productId, 5);
 
-        (, , uint256 stock) = marketplace.getProduct(productId);
+        (,, uint256 stock) = marketplace.getProduct(productId);
         assertEq(stock, 5);
     }
 
@@ -64,7 +64,7 @@ contract EscrowTest is Test {
         vm.expectRevert();
         escrow.createEscrow{value: 4 ether}(productId, 5);
 
-        (, , uint256 stock) = marketplace.getProduct(productId);
+        (,, uint256 stock) = marketplace.getProduct(productId);
         assertEq(stock, 10);
     }
 
@@ -76,7 +76,7 @@ contract EscrowTest is Test {
         vm.expectRevert();
         escrow.createEscrow{value: 15 ether}(productId, 15);
 
-        (, , uint256 stock) = marketplace.getProduct(productId);
+        (,, uint256 stock) = marketplace.getProduct(productId);
         assertEq(stock, 10);
     }
 
@@ -90,13 +90,11 @@ contract EscrowTest is Test {
 
         vm.prank(address(123));
         escrow.receivalConfirmation(escrowId);
-        (, , , , uint8 status) = escrow.getEscrow(escrowId);
+        (,,,, uint8 status) = escrow.getEscrow(escrowId);
         assertEq(uint256(status), uint256(Escrow.EscrowStatus.Completed));
     }
 
-    function testReceivalConfirmationShouldReturnErrorWhenBuyerDoesNotCall()
-        public
-    {
+    function testReceivalConfirmationShouldReturnErrorWhenBuyerDoesNotCall() public {
         marketplace.addProduct(100, 10);
         uint256 productId = 1;
         vm.prank(address(123));
@@ -107,9 +105,7 @@ contract EscrowTest is Test {
         escrow.receivalConfirmation(escrowId);
     }
 
-    function testReceivalConfirmationShouldReturnErrorWhenEscrowIsInCompletedStatus()
-        public
-    {
+    function testReceivalConfirmationShouldReturnErrorWhenEscrowIsInCompletedStatus() public {
         vm.prank(address(234));
         marketplace.addProduct(1 ether, 10);
         uint256 productId = 1;
@@ -124,9 +120,7 @@ contract EscrowTest is Test {
         escrow.receivalConfirmation(escrowId);
     }
 
-    function testReceivalConfirmationShouldReturnErrorWhenEscrowIsInResolvedStatus()
-        public
-    {
+    function testReceivalConfirmationShouldReturnErrorWhenEscrowIsInResolvedStatus() public {
         vm.prank(address(234));
         marketplace.addProduct(1 ether, 10);
         uint256 productId = 1;
@@ -144,9 +138,7 @@ contract EscrowTest is Test {
         escrow.receivalConfirmation(escrowId);
     }
 
-    function testReceivalConfirmationShouldReturnErrorWhenEscrowIsInRefundStatus()
-        public
-    {
+    function testReceivalConfirmationShouldReturnErrorWhenEscrowIsInRefundStatus() public {
         vm.prank(address(234));
         marketplace.addProduct(1 ether, 10);
         uint256 productId = 1;
@@ -193,7 +185,7 @@ contract EscrowTest is Test {
         vm.prank(msg.sender);
         escrow.dispute(escrowId);
 
-        (, , , , uint8 status) = escrow.getEscrow(escrowId);
+        (,,,, uint8 status) = escrow.getEscrow(escrowId);
         assertEq(uint256(status), uint256(Escrow.EscrowStatus.Disputed));
     }
 
@@ -246,7 +238,7 @@ contract EscrowTest is Test {
         vm.prank(msg.sender);
         escrow.resolve(escrowId);
 
-        (, , , , uint8 status) = escrow.getEscrow(escrowId);
+        (,,,, uint8 status) = escrow.getEscrow(escrowId);
         assertEq(uint256(status), uint256(Escrow.EscrowStatus.Resolved));
 
         uint256 balanceAfterResolution = seller.balance;
@@ -322,10 +314,7 @@ contract EscrowTest is Test {
         vm.deal(buyer, 100 ether);
 
         vm.prank(buyer);
-        uint256 escrowId = escrow.createEscrow{value: totalAmount}(
-            productId,
-            qty
-        );
+        uint256 escrowId = escrow.createEscrow{value: totalAmount}(productId, qty);
 
         vm.prank(msg.sender);
         escrow.dispute(escrowId);
@@ -335,16 +324,14 @@ contract EscrowTest is Test {
         vm.prank(msg.sender);
         escrow.refund(escrowId);
 
-        (, , , , uint8 status) = escrow.getEscrow(escrowId);
+        (,,,, uint8 status) = escrow.getEscrow(escrowId);
         assertEq(uint256(status), uint256(Escrow.EscrowStatus.Refunded));
 
         uint256 balanceAfterRefund = buyer.balance;
         assertEq(balanceAfterRefund, balanceBeforeRefund + totalAmount);
     }
 
-    function testRefundBySellerShouldSetStatusToRefundedAndTransferFunds()
-        public
-    {
+    function testRefundBySellerShouldSetStatusToRefundedAndTransferFunds() public {
         address buyer = address(123);
         address seller = address(234);
         uint256 price = 2 ether;
@@ -358,10 +345,7 @@ contract EscrowTest is Test {
         vm.deal(buyer, 100 ether);
 
         vm.prank(buyer);
-        uint256 escrowId = escrow.createEscrow{value: totalAmount}(
-            productId,
-            qty
-        );
+        uint256 escrowId = escrow.createEscrow{value: totalAmount}(productId, qty);
 
         vm.prank(msg.sender);
         escrow.dispute(escrowId);
@@ -371,7 +355,7 @@ contract EscrowTest is Test {
         vm.prank(seller);
         escrow.refund(escrowId);
 
-        (, , , , uint8 status) = escrow.getEscrow(escrowId);
+        (,,,, uint8 status) = escrow.getEscrow(escrowId);
         assertEq(uint256(status), uint256(Escrow.EscrowStatus.Refunded));
 
         uint256 balanceAfterRefund = buyer.balance;
@@ -393,10 +377,7 @@ contract EscrowTest is Test {
         vm.deal(buyer, 100 ether);
 
         vm.prank(buyer);
-        uint256 escrowId = escrow.createEscrow{value: totalAmount}(
-            productId,
-            qty
-        );
+        uint256 escrowId = escrow.createEscrow{value: totalAmount}(productId, qty);
 
         vm.prank(msg.sender);
         escrow.dispute(escrowId);
@@ -420,10 +401,7 @@ contract EscrowTest is Test {
         vm.deal(buyer, 100 ether);
 
         vm.prank(buyer);
-        uint256 escrowId = escrow.createEscrow{value: totalAmount}(
-            productId,
-            qty
-        );
+        uint256 escrowId = escrow.createEscrow{value: totalAmount}(productId, qty);
 
         vm.prank(buyer);
         escrow.receivalConfirmation(escrowId);
@@ -447,10 +425,7 @@ contract EscrowTest is Test {
         vm.deal(buyer, 100 ether);
 
         vm.prank(buyer);
-        uint256 escrowId = escrow.createEscrow{value: totalAmount}(
-            productId,
-            qty
-        );
+        uint256 escrowId = escrow.createEscrow{value: totalAmount}(productId, qty);
 
         vm.prank(msg.sender);
         escrow.dispute(escrowId);
@@ -476,18 +451,10 @@ contract EscrowTest is Test {
         vm.deal(buyer, 100 ether);
 
         vm.prank(buyer);
-        uint256 escrowId = escrow.createEscrow{value: totalAmount}(
-            productId,
-            qty
-        );
+        uint256 escrowId = escrow.createEscrow{value: totalAmount}(productId, qty);
 
-        (
-            address escrowBuyer,
-            address escrowSeller,
-            uint256 escrowPrice,
-            uint256 escrowQty,
-            uint8 escrowStatus
-        ) = escrow.getEscrow(escrowId);
+        (address escrowBuyer, address escrowSeller, uint256 escrowPrice, uint256 escrowQty, uint8 escrowStatus) =
+            escrow.getEscrow(escrowId);
 
         assertEq(escrowBuyer, buyer);
         assertEq(escrowSeller, seller);

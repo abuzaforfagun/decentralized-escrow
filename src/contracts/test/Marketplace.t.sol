@@ -30,9 +30,7 @@ contract MarketplaceTest is Test {
         vm.deal(user, 1 ether);
         uint256 productId = marketplace.addProduct(100, 10);
 
-        (address seller, uint256 price, uint256 stock) = marketplace.getProduct(
-            productId
-        );
+        (address seller, uint256 price, uint256 stock) = marketplace.getProduct(productId);
 
         assertEq(seller, address(123));
         assertEq(price, 100);
@@ -52,14 +50,14 @@ contract MarketplaceTest is Test {
         vm.prank(address(escrow));
         marketplace.updateStock(1, 5);
 
-        (, , uint256 stock) = marketplace.getProduct(1);
+        (,, uint256 stock) = marketplace.getProduct(1);
         assertEq(stock, 5);
     }
 
     function testUpdateStockShouldUpdateStockForSeller() public {
         marketplace.addProduct(100, 10);
         marketplace.updateStock(1, 5);
-        (, , uint256 stock) = marketplace.getProduct(1);
+        (,, uint256 stock) = marketplace.getProduct(1);
         assertEq(stock, 5);
     }
 
@@ -78,14 +76,14 @@ contract MarketplaceTest is Test {
         vm.prank(address(escrow));
         marketplace.updatePrice(1, 0.5 ether);
 
-        (, uint256 price, ) = marketplace.getProduct(1);
+        (, uint256 price,) = marketplace.getProduct(1);
         assertEq(price, 0.5 ether);
     }
 
     function testUpdatePriceShouldUpdatePriceForSeller() public {
         marketplace.addProduct(100, 10);
         marketplace.updatePrice(1, 0.5 ether);
-        (, uint256 price, ) = marketplace.getProduct(1);
+        (, uint256 price,) = marketplace.getProduct(1);
         assertEq(price, 0.5 ether);
     }
 
@@ -96,9 +94,7 @@ contract MarketplaceTest is Test {
 
     function testGetProductShouldReturnProduct() public {
         marketplace.addProduct(100, 10);
-        (address seller, uint256 price, uint256 stock) = marketplace.getProduct(
-            1
-        );
+        (address seller, uint256 price, uint256 stock) = marketplace.getProduct(1);
         assertEq(seller, address(this));
         assertEq(price, 100);
         assertEq(stock, 10);

@@ -17,10 +17,7 @@ contract Marketplace {
     address public s_escrowAddress;
 
     modifier onlyEscrowOrSeller(uint256 productId) {
-        if (
-            msg.sender != s_escrowAddress &&
-            msg.sender != s_products[productId].seller
-        ) {
+        if (msg.sender != s_escrowAddress && msg.sender != s_products[productId].seller) {
             revert Marketplace_Unauthorized();
         }
         _;
@@ -30,34 +27,21 @@ contract Marketplace {
         s_escrowAddress = escrowAddress;
     }
 
-    function addProduct(
-        uint256 price,
-        uint256 stock
-    ) external returns (uint256) {
+    function addProduct(uint256 price, uint256 stock) external returns (uint256) {
         s_counter++;
         uint256 productId = s_counter;
-        s_products[productId] = Models.Product({
-            seller: msg.sender,
-            price: price,
-            stock: stock
-        });
+        s_products[productId] = Models.Product({seller: msg.sender, price: price, stock: stock});
         emit ItemAdded(productId, msg.sender);
 
         return productId;
     }
 
-    function updateStock(
-        uint256 id,
-        uint256 stock
-    ) external onlyEscrowOrSeller(id) {
+    function updateStock(uint256 id, uint256 stock) external onlyEscrowOrSeller(id) {
         s_products[id].stock = stock;
         emit StockUpdated(id, stock);
     }
 
-    function updatePrice(
-        uint256 id,
-        uint256 price
-    ) external onlyEscrowOrSeller(id) {
+    function updatePrice(uint256 id, uint256 price) external onlyEscrowOrSeller(id) {
         Models.Product memory product = s_products[id];
         if (msg.sender != s_products[id].seller) {
             revert Marketplace_Unauthorized();
@@ -67,9 +51,7 @@ contract Marketplace {
         emit PriceUpdated(id, price);
     }
 
-    function getProduct(
-        uint256 id
-    ) external view returns (address, uint256, uint256) {
+    function getProduct(uint256 id) external view returns (address, uint256, uint256) {
         Models.Product memory product = s_products[id];
         if (product.seller == address(0)) {
             revert Marketplace_InvalidProduct();

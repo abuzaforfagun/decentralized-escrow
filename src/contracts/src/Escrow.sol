@@ -73,12 +73,8 @@ contract Escrow {
         i_owner = msg.sender;
     }
 
-    function createEscrow(
-        uint256 productId,
-        uint256 qty
-    ) external payable returns (uint256) {
-        (address seller, uint256 price, uint256 stock) = i_marketplace
-            .getProduct(productId);
+    function createEscrow(uint256 productId, uint256 qty) external payable returns (uint256) {
+        (address seller, uint256 price, uint256 stock) = i_marketplace.getProduct(productId);
 
         if (msg.value < (price * qty)) {
             revert Escrow_InefficiantEth();
@@ -104,20 +100,13 @@ contract Escrow {
         return escrowId;
     }
 
-    function receivalConfirmation(
-        uint256 escrowId
-    ) external onlyBuyer(escrowId) {
+    function receivalConfirmation(uint256 escrowId) external onlyBuyer(escrowId) {
         EscrowData storage escrow = s_escrow[escrowId];
-        if (
-            escrow.status != EscrowStatus.Pending &&
-            escrow.status != EscrowStatus.Disputed
-        ) {
+        if (escrow.status != EscrowStatus.Pending && escrow.status != EscrowStatus.Disputed) {
             revert Escrow_InvalidRequest();
         }
 
-        (bool success, ) = escrow.seller.call{value: escrow.price * escrow.qty}(
-            ""
-        );
+        (bool success,) = escrow.seller.call{value: escrow.price * escrow.qty}("");
         if (!success) {
             revert Escrow_Failed();
         }
@@ -144,9 +133,7 @@ contract Escrow {
             revert Escrow_InvalidRequest();
         }
 
-        (bool success, ) = escrow.seller.call{value: escrow.price * escrow.qty}(
-            ""
-        );
+        (bool success,) = escrow.seller.call{value: escrow.price * escrow.qty}("");
         if (!success) {
             revert Escrow_Failed();
         }
@@ -157,16 +144,11 @@ contract Escrow {
     function refund(uint256 escrowId) external onlyOwnerOrSeller(escrowId) {
         EscrowData storage escrow = s_escrow[escrowId];
 
-        if (
-            escrow.status != EscrowStatus.Disputed &&
-            escrow.status != EscrowStatus.Pending
-        ) {
+        if (escrow.status != EscrowStatus.Disputed && escrow.status != EscrowStatus.Pending) {
             revert Escrow_InvalidRequest();
         }
 
-        (bool success, ) = escrow.buyer.call{value: escrow.price * escrow.qty}(
-            ""
-        );
+        (bool success,) = escrow.buyer.call{value: escrow.price * escrow.qty}("");
         if (!success) {
             revert Escrow_Failed();
         }
@@ -174,20 +156,12 @@ contract Escrow {
         emit EscrowRefunded(escrowId);
     }
 
-    function getEscrow(
-        uint256 escrowId
-    ) external view returns (address, address, uint256, uint256, uint8) {
+    function getEscrow(uint256 escrowId) external view returns (address, address, uint256, uint256, uint8) {
         EscrowData memory escrow = s_escrow[escrowId];
 
         if (escrow.buyer == address(0)) {
             revert Escrow_InvalidRequest();
         }
-        return (
-            escrow.buyer,
-            escrow.seller,
-            escrow.price,
-            escrow.qty,
-            uint8(escrow.status)
-        );
+        return (escrow.buyer, escrow.seller, escrow.price, escrow.qty, uint8(escrow.status));
     }
 }
