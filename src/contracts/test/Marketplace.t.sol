@@ -5,7 +5,6 @@ import {Test} from "forge-std/Test.sol";
 import {Marketplace} from "../src/Marketplace.sol";
 import {Escrow} from "../src/Escrow.sol";
 import {DeployContracts} from "../script/DeployContracts.s.sol";
-import {console} from "forge-std/console.sol";
 
 contract MarketplaceTest is Test {
     Marketplace marketplace;

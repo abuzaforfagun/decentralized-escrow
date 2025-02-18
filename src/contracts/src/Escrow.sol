@@ -3,7 +3,6 @@ pragma solidity 0.8.20;
 
 import {Marketplace} from "./Marketplace.sol";
 import {Models} from "./libraries/Product.sol";
-import {console} from "forge-std/console.sol";
 
 contract Escrow {
     error Escrow_InefficiantEth();

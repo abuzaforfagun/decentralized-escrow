@@ -5,7 +5,6 @@ import {Test} from "forge-std/Test.sol";
 import {Marketplace} from "../src/Marketplace.sol";
 import {Escrow} from "../src/Escrow.sol";
 import {DeployContracts} from "../script/DeployContracts.s.sol";
-import {console} from "forge-std/console.sol";
 
 contract EscrowTest is Test {
     Escrow escrow;
@@ -13,7 +12,6 @@ contract EscrowTest is Test {
     DeployContracts deployer;
 
     function setUp() public {
-        console.log("message sender in test: ", msg.sender);
         deployer = new DeployContracts();
         (marketplace, escrow) = deployer.run();
     }
@@ -129,7 +127,6 @@ contract EscrowTest is Test {
     function testReceivalConfirmationShouldReturnErrorWhenEscrowIsInResolvedStatus()
         public
     {
-        console.log("message sender in test case: ", msg.sender);
         vm.prank(address(234));
         marketplace.addProduct(1 ether, 10);
         uint256 productId = 1;
@@ -137,7 +134,6 @@ contract EscrowTest is Test {
         vm.prank(address(123));
         uint256 escrowId = escrow.createEscrow{value: 5 ether}(productId, 5);
 
-        console.log("message sender in test case: ", msg.sender);
         vm.prank(msg.sender);
         escrow.dispute(escrowId);
         vm.prank(msg.sender);
@@ -151,7 +147,6 @@ contract EscrowTest is Test {
     function testReceivalConfirmationShouldReturnErrorWhenEscrowIsInRefundStatus()
         public
     {
-        console.log("message sender in test case: ", msg.sender);
         vm.prank(address(234));
         marketplace.addProduct(1 ether, 10);
         uint256 productId = 1;
@@ -159,7 +154,6 @@ contract EscrowTest is Test {
         vm.prank(address(123));
         uint256 escrowId = escrow.createEscrow{value: 5 ether}(productId, 5);
 
-        console.log("message sender in test case: ", msg.sender);
         vm.prank(msg.sender);
         escrow.dispute(escrowId);
         vm.prank(msg.sender);
