@@ -1,17 +1,4 @@
-## Foundry
-
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
-
-Foundry consists of:
-
--   **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
--   **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
--   **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
--   **Chisel**: Fast, utilitarian, and verbose solidity REPL.
-
-## Documentation
-
-https://book.getfoundry.sh/
+# Decentralized Escrow
 
 ## Usage
 
@@ -48,13 +35,30 @@ $ anvil
 ### Deploy
 
 ```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
+$ forge script script/DeployContracts.s.sol --rpc-url <your_rpc_url> --private-key <your_private_key>
 ```
 
 ### Cast
 
 ```shell
-$ cast <subcommand>
+$ cast send <deployed_marketplace_contract_address> "addProduct(uint256,uint256)" <price> <stock>
+
+$ cast send <deployed_marketplace_contract_address> "updateStock(uint256,uint256)" <product_id> <new_stock>
+
+$ cast send <deployed_marketplace_contract_address> "updatePrice(uint256,uint256)" <product_id> <new_price>
+
+$ cast call <deployed_marketplace_contract_address> "getProduct(uint256)" <product_id>
+
+$ cast send <deployed_escrow_contract_address> "createEscrow(uint256,uint256)" <product_id> <qty> --value <total_value>
+
+$ cast send <deployed_escrow_contract_address> "receivalConfirmation(uint256)" <escrow_id>
+
+$ cast send <deployed_escrow_contract_address> "resolve(uint256)" <escrow_id>
+
+$ cast send <deployed_escrow_contract_address> "refund(uint256)" <escrow_id>
+
+$ cast send <deployed_escrow_contract_address> "getEscrow(uint256)" <escrow_id>
+
 ```
 
 ### Help
