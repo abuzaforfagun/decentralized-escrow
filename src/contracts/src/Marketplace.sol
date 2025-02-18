@@ -14,32 +14,42 @@ contract Marketplace {
 
     uint256 private s_counter;
     mapping(uint256 => Models.Product) private s_products;
+    address private s_escrowAddress;
+
+    modifier onlyEscrowOrSeller(uint256 productId) {
+        if (
+            msg.sender != s_escrowAddress &&
+            msg.sender != s_products[productId].seller
+        ) {
+            revert Marketplace_Unauthorized();
+        }
+        _;
+    }
+
+    function setEscrowAddress(address escrowAddress) external {
+        s_escrowAddress = escrowAddress;
+    }
 
     function addProduct(
         uint256 price,
         uint256 stock
     ) external returns (uint256) {
         s_counter++;
-        s_products[s_counter] = Models.Product({
+        uint256 productId = s_counter;
+        s_products[productId] = Models.Product({
             seller: msg.sender,
             price: price,
             stock: stock
         });
-        emit ItemAdded(s_counter, msg.sender);
+        emit ItemAdded(productId, msg.sender);
 
-        return s_counter;
+        return productId;
     }
 
-    function updateStock(uint256 id, uint256 stock) external {
-        Models.Product memory product = s_products[id];
-        if (product.seller == address(0)) {
-            revert Marketplace_InvalidProduct();
-        }
-
-        if (msg.sender != s_products[id].seller) {
-            revert Marketplace_Unauthorized();
-        }
-
+    function updateStock(
+        uint256 id,
+        uint256 stock
+    ) external onlyEscrowOrSeller(id) {
         s_products[id].stock = stock;
         emit StockUpdated(id, stock);
     }

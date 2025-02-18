@@ -9,6 +9,7 @@ contract Escrow {
     error Escrow_InvalidRequest();
     error Escrow_Unauthorized();
     error Escrow_Failed();
+    error Escrow_StockNotAvailable();
 
     event EscrowCreated(uint256 indexed escrowId);
     event EscrowCompleted(uint256 indexed escrowId);
@@ -44,15 +45,24 @@ contract Escrow {
         i_owner = msg.sender;
     }
 
-    function createEscrow(uint256 productId, uint256 qty) external payable {
+    function createEscrow(
+        uint256 productId,
+        uint256 qty
+    ) external payable returns (uint256) {
         (address seller, uint256 price, uint256 stock) = i_marketplace
             .getProduct(productId);
 
-        if (msg.value != price) {
+        if (msg.value < price) {
             revert Escrow_InefficiantEth();
         }
+
+        if (stock < qty) {
+            revert Escrow_StockNotAvailable();
+        }
         s_escrowCounter++;
-        s_escrow[s_escrowCounter] = EscrowData({
+        uint256 escrowId = s_escrowCounter;
+
+        s_escrow[escrowId] = EscrowData({
             itemId: productId,
             seller: seller,
             buyer: msg.sender,
@@ -63,6 +73,7 @@ contract Escrow {
         uint256 newStock = stock - qty;
         i_marketplace.updateStock(productId, newStock);
         emit EscrowCreated(s_escrowCounter);
+        return escrowId;
     }
 
     function receivalConfirmation(uint256 escrowId) external {
@@ -134,5 +145,12 @@ contract Escrow {
         }
         escrow.status = EscrowStatus.Refunded;
         emit EscrowRefunded(escrowId);
+    }
+
+    function getEscrow(
+        uint256 escrowId
+    ) external view returns (address, address, uint256, uint256) {
+        EscrowData memory escrow = s_escrow[escrowId];
+        return (escrow.buyer, escrow.seller, escrow.price, escrow.qty);
     }
 }
