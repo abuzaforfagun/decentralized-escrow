@@ -8,7 +8,7 @@ contract Marketplace {
     error Marketplace_Unauthorized();
     error Marketplace_InvalidProduct();
 
-    event ItemAdded(uint256 indexed id, address indexed seller);
+    event ItemAdded(uint256 indexed id, address indexed seller, string guid);
     event PriceUpdated(uint256 indexed id, uint256 indexed price);
     event StockUpdated(uint256 indexed id, uint256 indexed newStock);
 
@@ -27,11 +27,11 @@ contract Marketplace {
         s_escrowAddress = escrowAddress;
     }
 
-    function addProduct(uint256 price, uint256 stock) external returns (uint256) {
+    function addProduct(uint256 price, uint256 stock, string memory guid) external returns (uint256) {
         s_counter++;
         uint256 productId = s_counter;
         s_products[productId] = Models.Product({seller: msg.sender, price: price, stock: stock});
-        emit ItemAdded(productId, msg.sender);
+        emit ItemAdded(productId, msg.sender, guid);
 
         return productId;
     }
