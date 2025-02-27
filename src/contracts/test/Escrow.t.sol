@@ -17,7 +17,7 @@ contract EscrowTest is Test {
     }
 
     function testCreateEscrowShouldCreateEscrow() public {
-        marketplace.addProduct(1 ether, 10);
+        marketplace.addProduct(1 ether, 10, "fa306437-0e41-48b8-b42b-98f07bd783b7");
         uint256 productId = 1;
         vm.deal(address(123), 100 ether);
         vm.prank(address(123));
@@ -26,7 +26,7 @@ contract EscrowTest is Test {
     }
 
     function testCreateEscrowShouldSetStatusToPending() public {
-        marketplace.addProduct(1 ether, 10);
+        marketplace.addProduct(1 ether, 10, "fa306437-0e41-48b8-b42b-98f07bd783b7");
         uint256 productId = 1;
         vm.deal(address(123), 100 ether);
         vm.prank(address(123));
@@ -46,7 +46,7 @@ contract EscrowTest is Test {
     }
 
     function testCreateEscrowShouldUpdateProductStock() public {
-        marketplace.addProduct(1 ether, 10);
+        marketplace.addProduct(1 ether, 10, "fa306437-0e41-48b8-b42b-98f07bd783b7");
         uint256 productId = 1;
         vm.prank(address(123));
         vm.deal(address(123), 100 ether);
@@ -57,7 +57,7 @@ contract EscrowTest is Test {
     }
 
     function testCreateEscrowShouldReturnErrorForInefficiantEth() public {
-        marketplace.addProduct(1 ether, 10);
+        marketplace.addProduct(1 ether, 10, "fa306437-0e41-48b8-b42b-98f07bd783b7");
         uint256 productId = 1;
         vm.prank(address(123));
         vm.deal(address(123), 50 ether);
@@ -69,7 +69,7 @@ contract EscrowTest is Test {
     }
 
     function testCreateEscrowShouldReturnErrorForStockNotAvailable() public {
-        marketplace.addProduct(1 ether, 10);
+        marketplace.addProduct(1 ether, 10, "fa306437-0e41-48b8-b42b-98f07bd783b7");
         uint256 productId = 1;
         vm.prank(address(123));
         vm.deal(address(123), 100 ether);
@@ -82,7 +82,7 @@ contract EscrowTest is Test {
 
     function testReceivalConfirmationShouldCompleteEscrow() public {
         vm.prank(address(234));
-        marketplace.addProduct(1 ether, 10);
+        marketplace.addProduct(1 ether, 10, "fa306437-0e41-48b8-b42b-98f07bd783b7");
         uint256 productId = 1;
         vm.deal(address(123), 100 ether);
         vm.prank(address(123));
@@ -95,7 +95,7 @@ contract EscrowTest is Test {
     }
 
     function testReceivalConfirmationShouldReturnErrorWhenBuyerDoesNotCall() public {
-        marketplace.addProduct(100, 10);
+        marketplace.addProduct(100, 10, "fa306437-0e41-48b8-b42b-98f07bd783b7");
         uint256 productId = 1;
         vm.prank(address(123));
         vm.deal(address(123), 100 ether);
@@ -107,7 +107,7 @@ contract EscrowTest is Test {
 
     function testReceivalConfirmationShouldReturnErrorWhenEscrowIsInCompletedStatus() public {
         vm.prank(address(234));
-        marketplace.addProduct(1 ether, 10);
+        marketplace.addProduct(1 ether, 10, "fa306437-0e41-48b8-b42b-98f07bd783b7");
         uint256 productId = 1;
         vm.deal(address(123), 100 ether);
         vm.prank(address(123));
@@ -122,7 +122,7 @@ contract EscrowTest is Test {
 
     function testReceivalConfirmationShouldReturnErrorWhenEscrowIsInResolvedStatus() public {
         vm.prank(address(234));
-        marketplace.addProduct(1 ether, 10);
+        marketplace.addProduct(1 ether, 10, "fa306437-0e41-48b8-b42b-98f07bd783b7");
         uint256 productId = 1;
         vm.deal(address(123), 100 ether);
         vm.prank(address(123));
@@ -140,7 +140,7 @@ contract EscrowTest is Test {
 
     function testReceivalConfirmationShouldReturnErrorWhenEscrowIsInRefundStatus() public {
         vm.prank(address(234));
-        marketplace.addProduct(1 ether, 10);
+        marketplace.addProduct(1 ether, 10, "fa306437-0e41-48b8-b42b-98f07bd783b7");
         uint256 productId = 1;
         vm.deal(address(123), 100 ether);
         vm.prank(address(123));
@@ -159,7 +159,7 @@ contract EscrowTest is Test {
     function testReceivalConfirmationShouldSendMoneyToSeller() public {
         address seller = address(234);
         vm.prank(seller);
-        marketplace.addProduct(1 ether, 10);
+        marketplace.addProduct(1 ether, 10, "fa306437-0e41-48b8-b42b-98f07bd783b7");
         uint256 productId = 1;
         vm.deal(address(123), 100 ether);
         vm.prank(address(123));
@@ -176,7 +176,7 @@ contract EscrowTest is Test {
 
     function testDisputeShouldSetStatusToDisputed() public {
         vm.prank(address(234));
-        marketplace.addProduct(1 ether, 10);
+        marketplace.addProduct(1 ether, 10, "fa306437-0e41-48b8-b42b-98f07bd783b7");
         uint256 productId = 1;
         vm.deal(address(123), 100 ether);
         vm.prank(address(123));
@@ -191,7 +191,7 @@ contract EscrowTest is Test {
 
     function testDisputeShouldRevertIfNotOwner() public {
         vm.prank(address(234));
-        marketplace.addProduct(1 ether, 10);
+        marketplace.addProduct(1 ether, 10, "fa306437-0e41-48b8-b42b-98f07bd783b7");
         uint256 productId = 1;
         vm.deal(address(123), 100 ether);
         vm.prank(address(123));
@@ -204,7 +204,7 @@ contract EscrowTest is Test {
 
     function testDisputeShouldRevertIfNotPending() public {
         vm.prank(address(234));
-        marketplace.addProduct(1 ether, 10);
+        marketplace.addProduct(1 ether, 10, "fa306437-0e41-48b8-b42b-98f07bd783b7");
         uint256 productId = 1;
         vm.deal(address(123), 100 ether);
         vm.prank(address(123));
@@ -222,7 +222,7 @@ contract EscrowTest is Test {
         address seller = address(234);
 
         vm.prank(seller);
-        marketplace.addProduct(1 ether, 10);
+        marketplace.addProduct(1 ether, 10, "fa306437-0e41-48b8-b42b-98f07bd783b7");
 
         uint256 productId = 1;
         vm.deal(address(123), 100 ether);
@@ -247,7 +247,7 @@ contract EscrowTest is Test {
 
     function testResolveShouldRevertIfNotOwner() public {
         vm.prank(address(234));
-        marketplace.addProduct(1 ether, 10);
+        marketplace.addProduct(1 ether, 10, "fa306437-0e41-48b8-b42b-98f07bd783b7");
 
         uint256 productId = 1;
         vm.deal(address(123), 100 ether);
@@ -265,7 +265,7 @@ contract EscrowTest is Test {
 
     function testResolveShouldRevertIfNotDisputed() public {
         vm.prank(address(234));
-        marketplace.addProduct(1 ether, 10);
+        marketplace.addProduct(1 ether, 10, "fa306437-0e41-48b8-b42b-98f07bd783b7");
 
         uint256 productId = 1;
         vm.deal(address(123), 100 ether);
@@ -282,7 +282,7 @@ contract EscrowTest is Test {
         address seller = address(234);
 
         vm.prank(seller);
-        marketplace.addProduct(1 ether, 10);
+        marketplace.addProduct(1 ether, 10, "fa306437-0e41-48b8-b42b-98f07bd783b7");
 
         uint256 productId = 1;
         vm.deal(address(123), 100 ether);
@@ -308,7 +308,7 @@ contract EscrowTest is Test {
         uint256 totalAmount = price * qty;
 
         vm.prank(seller);
-        marketplace.addProduct(price, 10);
+        marketplace.addProduct(price, 10, "fa306437-0e41-48b8-b42b-98f07bd783b7");
 
         uint256 productId = 1;
         vm.deal(buyer, 100 ether);
@@ -339,7 +339,7 @@ contract EscrowTest is Test {
         uint256 totalAmount = price * qty;
 
         vm.prank(seller);
-        marketplace.addProduct(price, 10);
+        marketplace.addProduct(price, 10, "fa306437-0e41-48b8-b42b-98f07bd783b7");
 
         uint256 productId = 1;
         vm.deal(buyer, 100 ether);
@@ -371,7 +371,7 @@ contract EscrowTest is Test {
         uint256 totalAmount = price * qty;
 
         vm.prank(seller);
-        marketplace.addProduct(price, 10);
+        marketplace.addProduct(price, 10, "fa306437-0e41-48b8-b42b-98f07bd783b7");
 
         uint256 productId = 1;
         vm.deal(buyer, 100 ether);
@@ -395,7 +395,7 @@ contract EscrowTest is Test {
         uint256 totalAmount = price * qty;
 
         vm.prank(seller);
-        marketplace.addProduct(price, 10);
+        marketplace.addProduct(price, 10, "fa306437-0e41-48b8-b42b-98f07bd783b7");
 
         uint256 productId = 1;
         vm.deal(buyer, 100 ether);
@@ -419,7 +419,7 @@ contract EscrowTest is Test {
         uint256 totalAmount = price * qty;
 
         vm.prank(seller);
-        marketplace.addProduct(price, 10);
+        marketplace.addProduct(price, 10, "fa306437-0e41-48b8-b42b-98f07bd783b7");
 
         uint256 productId = 1;
         vm.deal(buyer, 100 ether);
@@ -445,7 +445,7 @@ contract EscrowTest is Test {
         uint256 totalAmount = price * qty;
 
         vm.prank(seller);
-        marketplace.addProduct(price, 10);
+        marketplace.addProduct(price, 10, "fa306437-0e41-48b8-b42b-98f07bd783b7");
 
         uint256 productId = 1;
         vm.deal(buyer, 100 ether);
