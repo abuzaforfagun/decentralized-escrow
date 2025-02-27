@@ -35,24 +35,30 @@ func (s *onChainService) getProductDetailsByTransactionHash(ctx context.Context,
 	}
 	contractABI, err := abi.JSON(strings.NewReader(`[
   {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "id",
-        "type": "uint256",
-        "indexed": true
-      },
-      {
-        "internalType": "address",
-        "name": "seller",
-        "type": "address",
-        "indexed": true
-      }
-    ],
-    "type": "event",
-    "name": "ItemAdded",
-    "anonymous": false
-  }
+      "type": "event",
+      "name": "ItemAdded",
+      "inputs": [
+        {
+          "name": "id",
+          "type": "uint256",
+          "indexed": true,
+          "internalType": "uint256"
+        },
+        {
+          "name": "seller",
+          "type": "address",
+          "indexed": true,
+          "internalType": "address"
+        },
+        {
+          "name": "guid",
+          "type": "string",
+          "indexed": false,
+          "internalType": "string"
+        }
+      ],
+      "anonymous": false
+    }
 ]`))
 	if err != nil {
 		return nil, err
@@ -64,6 +70,7 @@ func (s *onChainService) getProductDetailsByTransactionHash(ctx context.Context,
 			event := struct {
 				ProductID *big.Int
 				Seller    common.Address
+				Guid      string
 			}{}
 
 			err := contractABI.UnpackIntoInterface(&event, "ItemAdded", log.Data)
