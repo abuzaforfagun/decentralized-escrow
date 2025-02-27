@@ -19,7 +19,6 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
-
       - name: Install Foundry
         uses: foundry-rs/foundry-toolchain@v1
         with:
@@ -29,18 +28,20 @@ jobs:
         run: |
           forge --version
 
-        working-directory: src/contracts
       - name: Run Forge fmt
         run: |
           forge fmt --check
         id: fmt
         working-directory: src/contracts
+
       - name: Run Forge build
         run: |
           forge build --sizes
         id: build
         working-directory: src/contracts
+
       - name: Run Forge tests
         run: |
           forge test -vvv
         id: test
+        working-directory: src/contracts
