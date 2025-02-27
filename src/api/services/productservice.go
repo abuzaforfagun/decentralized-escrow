@@ -38,7 +38,16 @@ func (s *ProductService) CreateProduct(ctx context.Context, product *models.Prod
 	}
 
 	_ = productDetails
-	err = s.productRepository.AddProduct(ctx, productDetails.Id.String(), product.Name, product.Description, product.TransactionHash, productDetails.Seller, productDetails.Price.String(), productDetails.Qty.String())
+	err = s.productRepository.AddProduct(
+		ctx,
+		product.CorrelationId,
+		productDetails.Id.String(),
+		product.Name,
+		product.Description,
+		product.TransactionHash,
+		productDetails.Seller,
+		productDetails.Price.String(),
+		productDetails.Qty.String())
 	if err != nil {
 		return fmt.Errorf("failed to save product details: %w", err)
 	}
